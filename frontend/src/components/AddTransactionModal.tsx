@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -58,8 +58,10 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<FormValues>({
+    shouldUnregister: true,
     defaultValues: {
       type: "expense",
       amount: undefined,
@@ -77,6 +79,7 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
 
   const txType = watch("type");
   const sourceAccountId = watch("accountId");
+  const selectedCategoryId = watch("categoryId");
 
   const filteredCategories = useMemo(
     () => (categoriesQuery.data ?? []).filter((c) => c.type.toLowerCase() === txType && !c.isArchived),
@@ -87,6 +90,29 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
     () => (accountsQuery.data ?? []).filter((a) => a.id !== sourceAccountId),
     [accountsQuery.data, sourceAccountId]
   );
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const accounts = accountsQuery.data ?? [];
+    if (!sourceAccountId && accounts.length > 0) {
+      setValue("accountId", accounts[0].id);
+    }
+  }, [accountsQuery.data, isOpen, setValue, sourceAccountId]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (txType === "transfer") {
+      setValue("categoryId", "");
+      return;
+    }
+
+    const categoryExists = filteredCategories.some((category) => category.id === selectedCategoryId);
+    if (!selectedCategoryId || !categoryExists) {
+      setValue("categoryId", filteredCategories[0]?.id ?? "");
+    }
+  }, [filteredCategories, isOpen, selectedCategoryId, setValue, txType]);
 
   const createMutation = useMutation({
     mutationFn: async (values: FormValues) => {
@@ -231,6 +257,8 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
               </select>
             </label>
           )}
+          {errors.destinationAccountId && txType === "transfer" ? <p className="error-text">{errors.destinationAccountId.message}</p> : null}
+          {errors.categoryId && txType !== "transfer" ? <p className="error-text">{errors.categoryId.message}</p> : null}
 
           <label>
             Merchant
@@ -270,4 +298,3 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
     </div>
   );
 }
-
