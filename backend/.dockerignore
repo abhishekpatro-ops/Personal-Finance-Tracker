@@ -1,0 +1,7 @@
+bin/
+obj/
+temp-build/
+temp-build-transactions/
+build-temp/
+.vs/
+.git/

@@ -1,0 +1,338 @@
+.recurring-head {
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.recurring-summary-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.recurring-summary-chip {
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+
+.recurring-summary-chip-total {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.recurring-summary-chip-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.recurring-summary-chip-paused {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.recurring-form-card {
+  margin-bottom: 1rem;
+}
+
+.recurring-form {
+  gap: 0.75rem;
+}
+
+.recurring-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.recurring-field {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.recurring-field label {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.recurring-field-wide {
+  grid-column: 1 / -1;
+}
+
+.recurring-field .error-text {
+  margin-top: -0.1rem;
+}
+
+.recurring-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inline-form label.recurring-check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+}
+
+.inline-form label.recurring-check-row input[type="checkbox"] {
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.inline-form label.recurring-check-row span {
+  line-height: 1.2;
+}
+
+.recurring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.recurring-card {
+  margin-bottom: 0;
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+
+.recurring-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.recurring-card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.recurring-card-title-wrap h3 {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recurring-card-status-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.recurring-type {
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.18rem 0.5rem;
+  white-space: nowrap;
+}
+
+.recurring-type-expense {
+  color: #9f1239;
+  background: #ffe4e6;
+}
+
+.recurring-type-income {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.recurring-status {
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+.recurring-status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.recurring-status.paused {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.recurring-metrics {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.32rem;
+}
+
+.recurring-metrics p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.recurring-metrics p span {
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+.recurring-metrics p strong {
+  color: #0f172a;
+  text-align: right;
+}
+
+.recurring-hint {
+  margin: 0.65rem 0 0;
+  color: #475569;
+  font-size: 0.84rem;
+}
+
+.recurring-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.recurring-action-btn {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #93c5fd;
+}
+
+.recurring-action-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.recurring-edit {
+  color: #1d4ed8;
+}
+
+.recurring-edit:hover {
+  background: #eff6ff;
+}
+
+.recurring-toggle {
+  color: #1f2937;
+  border-color: #cbd5e1;
+}
+
+.recurring-toggle:hover {
+  background: #f8fafc;
+}
+
+.recurring-delete {
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.recurring-delete:hover {
+  background: #fef2f2;
+}
+
+.recurring-active {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+}
+
+.recurring-paused {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+}
+
+.theme-dark .recurring-summary-chip-total,
+.theme-dark .recurring-summary-chip-paused {
+  background: #1f2937;
+  color: #cbd5e1;
+}
+
+.theme-dark .recurring-type-expense {
+  background: #4c0519;
+  color: #fecdd3;
+}
+
+.theme-dark .recurring-type-income,
+.theme-dark .recurring-status.active {
+  background: #052e16;
+  color: #bbf7d0;
+}
+
+.theme-dark .recurring-status.paused {
+  background: #1f2937;
+  color: #cbd5e1;
+}
+
+.theme-dark .recurring-metrics p span,
+.theme-dark .recurring-hint {
+  color: #94a3b8;
+}
+
+.theme-dark .recurring-active {
+  border-color: #166534;
+  background: #052e16;
+}
+
+.theme-dark .recurring-paused {
+  border-color: #334155;
+  background: #111827;
+}
+
+.theme-dark .recurring-action-btn {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.theme-dark .recurring-toggle,
+.theme-dark .recurring-edit {
+  color: #bfdbfe;
+}
+
+.theme-dark .recurring-delete {
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+@media (max-width: 1200px) {
+  .recurring-grid,
+  .recurring-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recurring-field-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .recurring-grid,
+  .recurring-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recurring-summary-row {
+    width: 100%;
+  }
+
+  .recurring-card-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .recurring-card-status-wrap {
+    justify-content: flex-start;
+  }
+
+  .recurring-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,246 @@
+.checkbox-field {
+  display: flex !important;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.checkbox-field input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+}
+
+.account-summary-card {
+  margin-bottom: 0.9rem;
+}
+
+.account-summary-card .hint-text {
+  margin: 0;
+}
+
+.account-total-row {
+  margin-top: 0.38rem;
+}
+
+.account-total {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.summary-visibility-btn {
+  min-height: 32px;
+  padding: 0.28rem 0.58rem;
+  font-size: 0.78rem;
+}
+
+.account-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.account-card {
+  background: #f8fbff;
+  color: #0f172a;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 255px;
+}
+
+.account-card-primary {
+  background: #ecfdf3;
+  border-color: #86efac;
+}
+
+.account-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  margin: 0 0 0.7rem;
+}
+
+.account-title-row span:first-child {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.primary-badge {
+  font-size: 0.7rem;
+  padding: 0.17rem 0.5rem;
+  background: #16a34a;
+  color: #fff;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.account-type-line {
+  margin: 0;
+  color: #334155;
+}
+
+.account-balance-row {
+  margin: 0.95rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.balance-eye {
+  margin-left: auto;
+  min-width: 66px;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.75rem;
+}
+
+.account-card-actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: 0.8rem;
+}
+
+.account-card-actions .ghost,
+.account-card-actions .danger {
+  min-height: 38px;
+}
+
+.checkbox-disabled-wrap {
+  align-items: flex-start;
+}
+
+.muted-note {
+  color: #64748b;
+}
+
+.account-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.account-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.46);
+  border: none;
+  cursor: pointer;
+}
+
+.account-drawer {
+  position: relative;
+  z-index: 1;
+  width: min(460px, 100vw);
+  height: 100dvh;
+  background: #ffffff;
+  border-left: 1px solid #dbeafe;
+  box-shadow: -16px 0 34px rgba(15, 23, 42, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.account-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.75rem;
+}
+
+.account-drawer-head h3 {
+  margin: 0;
+}
+
+.account-drawer-details {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.account-drawer-details p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  padding: 0.58rem 0.62rem;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.account-drawer-details p span {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.account-drawer-details p strong {
+  word-break: break-word;
+}
+
+.theme-dark .account-type-line {
+  color: #cbd5e1;
+}
+
+.theme-dark .account-balance-row {
+  color: #e5e7eb;
+}
+
+.theme-dark .account-drawer {
+  background: #0f172a;
+  border-left-color: #334155;
+  box-shadow: -16px 0 34px rgba(2, 6, 23, 0.58);
+}
+
+.theme-dark .account-drawer-details p {
+  background: #111827;
+  border-color: #334155;
+}
+
+.theme-dark .account-drawer-details p span {
+  color: #94a3b8;
+}
+
+@media (max-width: 1200px) {
+  .accounts-grid,
+  .account-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .accounts-grid,
+  .account-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .account-drawer {
+    width: 100vw;
+    border-left: none;
+  }
+}
+
+
+

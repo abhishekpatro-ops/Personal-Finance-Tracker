@@ -1,0 +1,27 @@
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(120deg, #dbeafe, #f8fafc);
+}
+
+.auth-card {
+  width: min(420px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 30px rgba(30, 58, 138, 0.14);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.auth-card label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.auth-card input {
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+}

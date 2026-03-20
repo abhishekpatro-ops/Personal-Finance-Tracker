@@ -1,0 +1,142 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  buildConfiguration: Release
+  nodeVersion: "20.x"
+  dotnetVersion: "9.0.x"
+  apiProject: "backend/src/PersonalFinanceTracker.Api/PersonalFinanceTracker.Api.csproj"
+  frontendPath: "frontend"
+  apiPublishDir: "$(Build.ArtifactStagingDirectory)/api-publish"
+  apiZipPath: "$(Build.ArtifactStagingDirectory)/api.zip"
+
+stages:
+  - stage: Build
+    displayName: Build API + Frontend
+    jobs:
+      - job: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UseDotNet@2
+            displayName: Use .NET SDK
+            inputs:
+              packageType: sdk
+              version: "$(dotnetVersion)"
+
+          - task: NodeTool@0
+            displayName: Use Node.js
+            inputs:
+              versionSpec: "$(nodeVersion)"
+
+          - script: dotnet restore "$(apiProject)"
+            displayName: Restore API
+
+          - script: dotnet build "$(apiProject)" --configuration "$(buildConfiguration)" --no-restore
+            displayName: Build API
+
+          - task: DotNetCoreCLI@2
+            displayName: Publish API
+            inputs:
+              command: publish
+              publishWebProjects: false
+              projects: "$(apiProject)"
+              arguments: "--configuration $(buildConfiguration) --no-build --output $(apiPublishDir)"
+              zipAfterPublish: false
+
+          - task: ArchiveFiles@2
+            displayName: Archive API package
+            inputs:
+              rootFolderOrFile: "$(apiPublishDir)"
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: "$(apiZipPath)"
+              replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish API artifact
+            inputs:
+              targetPath: "$(apiZipPath)"
+              artifact: api-package
+
+          - script: |
+              npm ci
+              npm run build
+            displayName: Build frontend
+            workingDirectory: "$(frontendPath)"
+            env:
+              VITE_API_BASE_URL: "$(apiBaseUrl)"
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish frontend artifact
+            inputs:
+              targetPath: "$(frontendPath)/dist"
+              artifact: frontend-dist
+
+  - stage: Deploy
+    displayName: Deploy to Azure
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployApi
+        displayName: Deploy API to App Service
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: api-package
+
+                - task: AzureWebApp@1
+                  displayName: Deploy API package
+                  inputs:
+                    azureSubscription: "$(azureServiceConnection)"
+                    appType: webAppLinux
+                    appName: "$(apiAppServiceName)"
+                    package: "$(Pipeline.Workspace)/api-package/api.zip"
+
+                - task: AzureCLI@2
+                  displayName: Configure API app settings
+                  inputs:
+                    azureSubscription: "$(azureServiceConnection)"
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az webapp config appsettings set \
+                        --resource-group "$(resourceGroupName)" \
+                        --name "$(apiAppServiceName)" \
+                        --settings \
+                        ASPNETCORE_ENVIRONMENT=Production \
+                        ConnectionStrings__DefaultConnection="$(postgresConnectionString)" \
+                        Jwt__Key="$(jwtKey)" \
+                        Jwt__Issuer="$(jwtIssuer)" \
+                        Jwt__Audience="$(jwtAudience)" \
+                        Frontend__Url="$(frontendUrl)"
+
+      - deployment: DeployFrontend
+        displayName: Deploy frontend to Static Web Apps
+        dependsOn: DeployApi
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: frontend-dist
+
+                - task: AzureStaticWebApp@0
+                  displayName: Deploy static app
+                  inputs:
+                    app_location: "$(Pipeline.Workspace)/frontend-dist"
+                    output_location: ""
+                    skip_app_build: true
+                    skip_api_build: true
+                    azure_static_web_apps_api_token: "$(swaDeploymentToken)"

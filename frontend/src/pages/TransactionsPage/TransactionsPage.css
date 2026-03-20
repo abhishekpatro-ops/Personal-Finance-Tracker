@@ -1,0 +1,251 @@
+.transactions-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.tx-filter-card,
+.tx-bulk-card {
+  margin-bottom: 0;
+}
+
+.tx-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.tx-filter-grid label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.tx-filter-grid input,
+.tx-filter-grid select,
+.tx-bulk-left select {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+}
+
+.tx-filter-actions {
+  margin-top: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tx-bulk-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tx-bulk-left {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.tx-bulk-text {
+  margin: 0;
+}
+
+.tx-table th,
+.tx-table td {
+  color: #0f172a;
+  vertical-align: top;
+}
+
+.tx-row-income td {
+  background: #dcfce7;
+}
+
+.tx-row-expense td {
+  background: #fee2e2;
+}
+
+.tx-row-transfer td {
+  background: #e0f2fe;
+}
+
+.tx-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+
+.tx-action-btn {
+  border: 1px solid #93c5fd;
+  background: #fff;
+  color: #0f172a;
+  border-radius: 6px;
+  padding: 0.28rem 0.58rem;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.tx-action-btn:hover {
+  background: #f8fafc;
+}
+
+.tx-action-delete {
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.tx-action-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.tx-value-income {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.tx-value-expense {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.tx-value-transfer {
+  color: #0369a1;
+  font-weight: 600;
+}
+
+.tx-detail-row td {
+  background: #f8fafc;
+}
+
+.tx-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem 0.8rem;
+}
+
+.tx-detail-grid p {
+  margin: 0;
+  display: grid;
+  gap: 0.08rem;
+}
+
+.tx-detail-grid span {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.tx-detail-grid strong {
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.tx-pagination {
+  margin-top: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tx-pagination-left label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tx-pagination-left select {
+  padding: 0.36rem;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+}
+
+.tx-pagination-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 1200px) {
+  .tx-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tx-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .tx-filter-grid,
+  .tx-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tx-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.theme-dark .tx-filter-grid label,
+.theme-dark .tx-detail-grid strong,
+.theme-dark .tx-bulk-text,
+.theme-dark .tx-table th,
+.theme-dark .tx-table td {
+  color: #e5e7eb;
+}
+
+.theme-dark .tx-filter-grid input,
+.theme-dark .tx-filter-grid select,
+.theme-dark .tx-bulk-left select,
+.theme-dark .tx-pagination-left select {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #475569;
+}
+
+.theme-dark .tx-row-income td {
+  background: rgba(22, 163, 74, 0.18);
+}
+
+.theme-dark .tx-row-expense td {
+  background: rgba(220, 38, 38, 0.16);
+}
+
+.theme-dark .tx-row-transfer td,
+.theme-dark .tx-detail-row td {
+  background: #0f1b2d;
+}
+
+.theme-dark .tx-action-btn {
+  background: #1f2937;
+  color: #e2e8f0;
+  border-color: #475569;
+}
+
+.theme-dark .tx-action-delete {
+  color: #fecaca;
+  border-color: #f87171;
+}
+
+.theme-dark .tx-detail-grid span {
+  color: #94a3b8;
+}
+
+.theme-dark .tx-value-income {
+  color: #86efac;
+}
+
+.theme-dark .tx-value-expense {
+  color: #fca5a5;
+}
+
+.theme-dark .tx-value-transfer {
+  color: #7dd3fc;
+}

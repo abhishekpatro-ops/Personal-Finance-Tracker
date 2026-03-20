@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pft-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: personal_finance_tracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pft-backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=personal_finance_tracker;Username=postgres;Password=postgres
+      Frontend__Url: http://localhost:5173
+      Jwt__Key: replace-with-a-strong-random-key-at-least-32-characters
+      Jwt__Issuer: PersonalFinanceTracker
+      Jwt__Audience: PersonalFinanceTrackerClient
+    ports:
+      - "5298:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:5298/api
+    container_name: pft-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  postgres_data:

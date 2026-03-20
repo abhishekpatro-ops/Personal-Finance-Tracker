@@ -1,0 +1,253 @@
+.report-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.report-export-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.report-filter-card {
+  margin-bottom: 1rem;
+}
+
+.report-filter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.65rem;
+}
+
+.report-filter-head h3 {
+  margin: 0;
+}
+
+.report-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.report-filter-grid label {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.report-filter-grid input,
+.report-filter-grid select {
+  padding: 0.58rem;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+}
+
+.report-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.report-kpi {
+  margin-bottom: 0;
+}
+
+.report-kpi p {
+  margin: 0;
+  color: #475569;
+  font-size: 0.84rem;
+}
+
+.report-kpi h3 {
+  margin: 0.3rem 0 0;
+  font-size: 1.25rem;
+}
+
+.report-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.report-block {
+  margin-bottom: 0;
+}
+
+.report-block h3 {
+  margin: 0 0 0.65rem;
+}
+
+.report-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.report-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  background: #f8fafc;
+}
+
+.report-row-stack {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.report-label {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.report-value {
+  margin: 0.1rem 0 0;
+  font-size: 0.92rem;
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.report-subvalue {
+  margin: 0.08rem 0 0;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.report-amount {
+  margin: 0;
+  font-weight: 700;
+}
+
+.report-positive {
+  color: #16a34a;
+}
+
+.report-negative {
+  color: #dc2626;
+}
+
+.report-breakdown-row {
+  display: grid;
+  gap: 0.3rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  background: #f8fafc;
+}
+
+.report-breakdown-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.report-breakdown-top .report-value,
+.report-breakdown-top .report-amount {
+  margin: 0;
+}
+
+.report-breakdown-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  overflow: hidden;
+}
+
+.report-breakdown-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
+}
+
+.report-trend-values {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  font-size: 0.84rem;
+}
+
+.report-transactions-block {
+  margin-top: 0;
+}
+
+.theme-dark .report-row,
+.theme-dark .report-breakdown-row {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.theme-dark .report-value {
+  color: #e2e8f0;
+}
+
+.theme-dark .report-label,
+.theme-dark .report-subvalue,
+.theme-dark .report-kpi p {
+  color: #94a3b8;
+}
+
+.theme-dark .report-breakdown-track {
+  background: #1e3a8a;
+}
+
+.theme-dark .report-filter-grid input,
+.theme-dark .report-filter-grid select {
+  border-color: #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+@media (max-width: 1200px) {
+  .report-filter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .report-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .report-sections-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .report-page-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-breakdown-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,147 @@
+.category-group-wrap {
+  margin-bottom: 1.1rem;
+}
+
+.category-group-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.category-group-title-row h3 {
+  margin: 0;
+}
+
+.category-count {
+  padding: 0.16rem 0.52rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.category-form-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, 160px) minmax(120px, 220px);
+  gap: 0.55rem;
+}
+
+.category-form-row input[type="color"] {
+  padding: 0.22rem;
+  min-height: 40px;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.category-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.8rem;
+  border-radius: 10px;
+}
+
+.category-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.category-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1rem;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.category-title {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.category-subtitle {
+  margin: 0.16rem 0 0;
+}
+
+.category-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.cat-action-btn {
+  background: #ffffff;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cat-action-btn:hover {
+  background: #eff6ff;
+}
+
+.cat-action-delete {
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.cat-action-delete:hover {
+  background: #fef2f2;
+}
+
+.category-card-expense {
+  border: 1px solid #fecaca;
+}
+
+.category-card-income {
+  border: 1px solid #a7f3d0;
+}
+
+.category-card-archived {
+  opacity: 0.85;
+}
+
+.theme-dark .category-count {
+  background: #1f2937;
+  color: #cbd5e1;
+}
+
+.theme-dark .category-card-archived {
+  opacity: 0.72;
+}
+
+@media (max-width: 1200px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 880px) {
+  .category-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+}

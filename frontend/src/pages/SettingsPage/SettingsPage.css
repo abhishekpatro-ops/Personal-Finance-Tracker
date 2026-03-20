@@ -1,0 +1,137 @@
+.settings-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-card {
+  margin-bottom: 0;
+}
+
+.settings-card-head {
+  margin-bottom: 0.85rem;
+}
+
+.settings-card-head h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.settings-card-head p {
+  margin: 0.25rem 0 0;
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+.settings-form-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.settings-form-grid label {
+  display: grid;
+  gap: 0.3rem;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.settings-form-grid input,
+.settings-form-grid select {
+  padding: 0.62rem;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+  font-weight: 500;
+}
+
+.settings-form-grid input:focus,
+.settings-form-grid select:focus {
+  outline: 2px solid #bfdbfe;
+  outline-offset: 1px;
+}
+
+.settings-toggles {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.settings-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
+  background: #f8fbff;
+}
+
+.settings-toggle-row input[type="checkbox"] {
+  margin-top: 0.15rem;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.settings-toggle-row span {
+  display: grid;
+  gap: 0.08rem;
+}
+
+.settings-toggle-row strong {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.settings-toggle-row small {
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+.settings-inline-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.settings-danger-zone {
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+}
+
+.settings-footer-card {
+  margin-bottom: 0;
+}
+
+.settings-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.settings-save-note {
+  margin: 0;
+  color: #475569;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 1100px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .settings-inline-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
