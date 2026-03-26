@@ -22,6 +22,22 @@ type Category = {
   isArchived: boolean;
 };
 
+type Rule = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  priority: number;
+  conditionJson: {
+    field: string;
+    operator: string;
+    value: string;
+  };
+  actionJson: {
+    type: string;
+    value: string;
+  };
+};
+
 type FormValues = {
   type: "expense" | "income" | "transfer";
   amount: number;
@@ -46,12 +62,18 @@ async function fetchCategories() {
   return data;
 }
 
+async function fetchRules() {
+  const { data } = await api.get<Rule[]>("/rules");
+  return data;
+}
+
 export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransactionModalProps) {
   const queryClient = useQueryClient();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const accountsQuery = useQuery({ queryKey: ["accounts"], queryFn: fetchAccounts, enabled: isOpen });
   const categoriesQuery = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: isOpen });
+  const rulesQuery = useQuery({ queryKey: ["rules"], queryFn: fetchRules, enabled: isOpen });
 
   const {
     register,
@@ -89,6 +111,11 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
   const destinationAccounts = useMemo(
     () => (accountsQuery.data ?? []).filter((a) => a.id !== sourceAccountId),
     [accountsQuery.data, sourceAccountId]
+  );
+
+  const activeRules = useMemo(
+    () => (rulesQuery.data ?? []).filter((rule) => rule.isActive).sort((a, b) => a.priority - b.priority),
+    [rulesQuery.data]
   );
 
   useEffect(() => {
@@ -135,9 +162,10 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
         tags
       };
 
-      await api.post("/transactions", payload);
+      const { data } = await api.post("/transactions", payload);
+      return data as { alerts?: string[] };
     },
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["transactions"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard-summary"] }),
@@ -145,7 +173,12 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
       ]);
       reset();
       setSubmitError(null);
-      onToast?.("Transaction added successfully.", "success");
+      const alerts = response?.alerts ?? [];
+      if (alerts.length > 0) {
+        onToast?.(`Transaction added. Rule alerts: ${alerts.join(" | ")}`, "success");
+      } else {
+        onToast?.("Transaction added successfully.", "success");
+      }
       onClose();
     },
     onError: (error: any) => {
@@ -202,6 +235,23 @@ export function AddTransactionModal({ isOpen, onClose, onToast }: AddTransaction
         {hasAccounts && !hasCategoriesForType && !categoriesQuery.isLoading ? (
           <p className="error-text">No {txType} category found. Add one from <Link to="/categories" onClick={onClose}>Categories</Link>.</p>
         ) : null}
+
+        <div className="card" style={{ marginBottom: "0.75rem", padding: "0.65rem" }}>
+          <p className="hint-text" style={{ marginBottom: "0.35rem" }}>
+            Active rules are applied automatically when you save.
+          </p>
+          {activeRules.length === 0 ? (
+            <p className="hint-text">No active rules.</p>
+          ) : (
+            <ul style={{ margin: 0, paddingLeft: "1.1rem" }}>
+              {activeRules.map((rule) => (
+                <li key={rule.id} className="hint-text">
+                  {rule.name} (Priority {rule.priority})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <form className="modal-form" onSubmit={onSubmit}>
           <label>

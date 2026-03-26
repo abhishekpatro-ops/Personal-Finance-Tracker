@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { AddTransactionModal } from "../components/AddTransactionModal";
 import { useAuthStore } from "../store/authStore";
 
 const THEME_KEY = "pft_theme";
@@ -14,8 +13,11 @@ const navItems = [
   ["Budgets", "/budgets"],
   ["Goals", "/goals"],
   ["Reports", "/reports"],
+  ["Insights", "/insights"],
+  ["Rules", "/rules"],
   ["Recurring", "/recurring"],
   ["Accounts", "/accounts"],
+  ["Shared", "/shared-accounts"],
   ["Settings", "/settings"]
 ] as const;
 
@@ -67,17 +69,21 @@ function getDisplayUserName(token: string | null) {
   return "User";
 }
 
+function pageTitleFromPath(pathname: string) {
+  const matched = navItems.find(([, path]) => pathname.startsWith(path));
+  return matched?.[0] ?? "MoneyPilot";
+}
+
 export function AppShell() {
-  const [isAddOpen, setIsAddOpen] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const [theme, setTheme] = useState<ThemeMode>(() => {
     const savedTheme = localStorage.getItem(THEME_KEY);
     return savedTheme === "dark" ? "dark" : "light";
   });
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const showAddTransaction = location.pathname.startsWith("/transactions");
 
   const accessToken = useAuthStore((s) => s.accessToken);
   const refreshToken = useAuthStore((s) => s.refreshToken);
@@ -99,6 +105,10 @@ export function AppShell() {
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [location.pathname]);
+
   function showToast(message: string, variant: "success" | "error" = "success") {
     setToast({ message, variant });
     window.setTimeout(() => setToast(null), 2600);
@@ -111,11 +121,16 @@ export function AppShell() {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      <aside className={`sidebar ${isMobileNavOpen ? "mobile-open" : ""}`}>
         <h1>MoneyPilot</h1>
         <nav>
           {navItems.map(([label, path]) => (
-            <NavLink key={path} to={path} className={({ isActive }) => (isActive ? "active" : "") }>
+            <NavLink
+              key={path}
+              to={path}
+              className={({ isActive }) => (isActive ? "active" : "")}
+              onClick={() => setIsMobileNavOpen(false)}
+            >
               {label}
             </NavLink>
           ))}
@@ -143,22 +158,34 @@ export function AppShell() {
         </div>
       </aside>
 
+      {isMobileNavOpen ? (
+        <button
+          type="button"
+          className="mobile-nav-backdrop"
+          aria-label="Close menu"
+          onClick={() => setIsMobileNavOpen(false)}
+        />
+      ) : null}
+
       <main className="main-content">
         <header className="topbar">
-          {showAddTransaction ? (
-            <button className="primary" onClick={() => setIsAddOpen(true)}>+ Add Transaction</button>
-          ) : null}
+          <div className="topbar-left">
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              onClick={() => setIsMobileNavOpen(true)}
+              aria-label="Open menu"
+            >
+              Menu
+            </button>
+            <p className="page-title">{pageTitleFromPath(location.pathname)}</p>
+          </div>
         </header>
 
         <Outlet />
-
-        <AddTransactionModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onToast={showToast} />
         {toast ? <div className={`app-toast app-toast-${toast.variant}`}>{toast.message}</div> : null}
       </main>
     </div>
   );
 }
-
-
-
 

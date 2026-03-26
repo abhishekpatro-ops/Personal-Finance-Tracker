@@ -24,6 +24,7 @@ create table if not exists accounts (
   type varchar(30) not null,
   opening_balance numeric(12,2) not null default 0,
   current_balance numeric(12,2) not null default 0,
+  is_primary boolean not null default false,
   institution_name varchar(120),
   created_at timestamp not null default now(),
   last_updated_at timestamp not null default now()
@@ -42,7 +43,9 @@ create table if not exists categories (
 create table if not exists transactions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references users(id),
+  created_by_user_id uuid not null references users(id),
   account_id uuid not null references accounts(id),
+  destination_account_id uuid references accounts(id),
   category_id uuid references categories(id),
   type varchar(20) not null,
   amount numeric(12,2) not null,
@@ -94,4 +97,26 @@ create table if not exists recurring_transactions (
   next_run_date date not null,
   auto_create_transaction boolean not null default true,
   is_paused boolean not null default false
+);
+
+create table if not exists rules (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id),
+  priority int not null default 100,
+  name varchar(140) not null,
+  condition_json jsonb not null,
+  action_json jsonb not null,
+  is_active boolean not null default true,
+  created_at timestamp not null default now(),
+  updated_at timestamp not null default now()
+);
+
+create table if not exists account_members (
+  id uuid primary key default gen_random_uuid(),
+  account_id uuid not null references accounts(id) on delete cascade,
+  user_id uuid not null references users(id) on delete cascade,
+  role varchar(20) not null,
+  invited_by_user_id uuid not null references users(id),
+  created_at timestamp not null default now(),
+  unique(account_id, user_id)
 );

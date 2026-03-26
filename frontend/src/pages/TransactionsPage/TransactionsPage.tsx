@@ -1,6 +1,7 @@
 import "./TransactionsPage.css";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AddTransactionModal } from "../../components/AddTransactionModal";
 import { EditTransactionModal } from "../../components/EditTransactionModal";
 import { api } from "../../services/api";
 
@@ -33,6 +34,37 @@ type Category = {
   type: string;
 };
 
+type Rule = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  priority: number;
+};
+
+type ImportTransactionItem = {
+  accountId?: string;
+  accountName?: string | null;
+  destinationAccountId?: string | null;
+  destinationAccountName?: string | null;
+  categoryId?: string | null;
+  categoryName?: string | null;
+  type: "income" | "expense" | "transfer";
+  amount: number;
+  date: string;
+  merchant?: string | null;
+  note?: string | null;
+  paymentMethod?: string | null;
+  recurringTransactionId?: string | null;
+  tags?: string[];
+};
+
+type ImportResponse = {
+  importedCount: number;
+  failedCount: number;
+  imported: Array<{ index: number; transactionId: string; alerts?: string[] }>;
+  failures: Array<{ index: number; error: string }>;
+};
+
 type ToastState = {
   message: string;
   variant: "success" | "error";
@@ -42,7 +74,8 @@ type FilterState = {
   from: string;
   to: string;
   type: "" | "income" | "expense" | "transfer";
-  accountId: string;
+  accountId?: string;
+  accountName?: string | null;
   categoryId: string;
   minAmount: string;
   maxAmount: string;
@@ -59,6 +92,28 @@ const defaultFilters: FilterState = {
   maxAmount: "",
   search: ""
 };
+
+const IMPORT_TEMPLATE = `[
+  {
+    "accountName": "HDFC",
+    "type": "expense",
+    "amount": 3000,
+    "date": "2026-03-24",
+    "merchant": "Uber",
+    "categoryName": "Transport",
+    "note": "Airport ride",
+    "paymentMethod": "UPI",
+    "tags": ["travel"]
+  },
+  {
+    "accountName": "HDFC",
+    "type": "transfer",
+    "amount": 10000,
+    "date": "2026-03-24",
+    "destinationAccountName": "SBI",
+    "note": "Move funds to savings"
+  }
+]`;
 
 function toDateDisplay(value?: string | null) {
   if (!value) return "-";
@@ -101,6 +156,53 @@ async function fetchCategories() {
   return data;
 }
 
+async function fetchRules() {
+  const { data } = await api.get<Rule[]>("/rules");
+  return data;
+}
+
+function parseImportPayload(raw: string): ImportTransactionItem[] {
+  if (!raw.trim()) {
+    throw new Error("Paste JSON array to import.");
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error("Import JSON is invalid.");
+  }
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("Import JSON must be an array of transactions.");
+  }
+
+  const rows = parsed as ImportTransactionItem[];
+  if (rows.length === 0) {
+    throw new Error("At least one transaction is required.");
+  }
+
+  const guidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row?.accountId && !row?.accountName) throw new Error(`Row ${i + 1}: accountId or accountName is required.`);
+    if (row.accountId && !guidPattern.test(row.accountId)) throw new Error(`Row ${i + 1}: accountId must be a valid GUID.`);
+
+    if (!row?.type) throw new Error(`Row ${i + 1}: type is required.`);
+    if (!(row.type === "income" || row.type === "expense" || row.type === "transfer")) throw new Error(`Row ${i + 1}: type must be income, expense, or transfer.`);
+    if (typeof row.amount !== "number" || row.amount <= 0) throw new Error(`Row ${i + 1}: amount must be a positive number.`);
+    if (!row?.date) throw new Error(`Row ${i + 1}: date is required (YYYY-MM-DD).`);
+
+    if (row.destinationAccountId && !guidPattern.test(row.destinationAccountId)) throw new Error(`Row ${i + 1}: destinationAccountId must be a valid GUID.`);
+    if (row.type === "transfer" && !row.destinationAccountId && !row.destinationAccountName) throw new Error(`Row ${i + 1}: destinationAccountId or destinationAccountName is required for transfer.`);
+
+    if (row.categoryId && !guidPattern.test(row.categoryId)) throw new Error(`Row ${i + 1}: categoryId must be a valid GUID.`);
+  }
+
+  return rows;
+}
+
 export function TransactionsPage() {
   const queryClient = useQueryClient();
 
@@ -113,6 +215,10 @@ export function TransactionsPage() {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [bulkCategoryId, setBulkCategoryId] = useState("");
   const [toast, setToast] = useState<ToastState | null>(null);
+  const [importJson, setImportJson] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importResult, setImportResult] = useState<ImportResponse | null>(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   const query = useQuery({
     queryKey: ["transactions", filters],
@@ -121,6 +227,7 @@ export function TransactionsPage() {
 
   const accountsQuery = useQuery({ queryKey: ["accounts"], queryFn: fetchAccounts });
   const categoriesQuery = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const rulesQuery = useQuery({ queryKey: ["rules"], queryFn: fetchRules });
 
   const accountById = useMemo(() => {
     const map = new Map<string, string>();
@@ -137,6 +244,11 @@ export function TransactionsPage() {
     }
     return map;
   }, [categoriesQuery.data]);
+
+  const activeRules = useMemo(
+    () => (rulesQuery.data ?? []).filter((rule) => rule.isActive).sort((a, b) => a.priority - b.priority),
+    [rulesQuery.data]
+  );
 
   useEffect(() => {
     setPage(1);
@@ -158,6 +270,47 @@ export function TransactionsPage() {
     setToast({ message, variant });
     window.setTimeout(() => setToast(null), 2600);
   }
+
+  const importMutation = useMutation({
+    mutationFn: async (rows: ImportTransactionItem[]) => {
+      const { data } = await api.post<ImportResponse>("/transactions/import", { transactions: rows });
+      return data;
+    },
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["transactions"] }),
+        queryClient.invalidateQueries({ queryKey: ["dashboard-summary"] }),
+        queryClient.invalidateQueries({ queryKey: ["accounts"] })
+      ]);
+      setImportResult(result);
+      setImportError(null);
+      if (result.failedCount > 0) {
+        showToast(`Imported ${result.importedCount}. Failed ${result.failedCount}.`, "error");
+      } else {
+        const alertCount = result.imported.reduce((sum, row) => sum + (row.alerts?.length ?? 0), 0);
+        showToast(alertCount > 0 ? `Imported ${result.importedCount}. Rule alerts: ${alertCount}.` : `Imported ${result.importedCount} transactions.`, "success");
+      }
+    },
+    onError: (error: any) => {
+      if (error?.response?.status === 405) {
+        setImportError("Import endpoint is not available in the running backend. Restart backend API and try again.");
+        setImportResult(null);
+        return;
+      }
+
+      const data = error?.response?.data;
+      if (data?.errors && typeof data.errors === "object") {
+        const allErrors = Object.values(data.errors).flat().filter(Boolean).join(" | ");
+        setImportError(allErrors || data.title || "Transaction import failed.");
+        setImportResult(null);
+        return;
+      }
+
+      const message = data?.detail || data?.title || (typeof data === "string" ? data : "Transaction import failed.");
+      setImportError(message);
+      setImportResult(null);
+    }
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -257,12 +410,24 @@ export function TransactionsPage() {
     setSelectedIds((prev) => Array.from(new Set([...prev, ...ids])));
   }
 
+  function handleImport() {
+    try {
+      setImportError(null);
+      const rows = parseImportPayload(importJson);
+      importMutation.mutate(rows);
+    } catch (error: any) {
+      setImportResult(null);
+      setImportError(error?.message ?? "Import payload is invalid.");
+    }
+  }
+
   const allSelectedOnPage = pageRows.length > 0 && pageRows.every((tx) => selectedIds.includes(tx.id));
 
   return (
     <section className="transactions-page">
       <div className="section-head">
         <h2>Transactions</h2>
+        <button type="button" className="primary" onClick={() => setIsAddOpen(true)}>+ Add Transaction</button>
       </div>
 
       <article className="card tx-filter-card">
@@ -356,6 +521,94 @@ export function TransactionsPage() {
         >
           {bulkDeleteMutation.isPending ? "Deleting..." : "Bulk Delete"}
         </button>
+      </article>
+
+      <article className="card tx-import-card">
+        <div className="tx-import-head">
+          <h3>Transaction Import</h3>
+          <p className="hint-text">Import transactions in bulk. Active rules are applied during import.</p>
+        </div>
+
+        <div className="tx-import-layout">
+          <div className="tx-import-main">
+            <label className="tx-import-label">
+              Paste JSON Array
+              <textarea
+                className="tx-import-textarea"
+                value={importJson}
+                onChange={(e) => setImportJson(e.target.value)}
+                placeholder={IMPORT_TEMPLATE}
+              />
+            </label>
+
+            <div className="tx-import-actions">
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => setImportJson(IMPORT_TEMPLATE)}
+              >
+                Load Template
+              </button>
+              <button type="button" className="ghost" onClick={() => { setImportJson(""); setImportError(null); setImportResult(null); }}>Clear</button>
+              <button type="button" className="primary" onClick={handleImport} disabled={importMutation.isPending}>
+                {importMutation.isPending ? "Importing..." : "Import Transactions"}
+              </button>
+            </div>
+          </div>
+
+          <aside className="tx-import-side">
+            <div className="tx-import-side-card">
+              <p className="tx-import-side-title">Required Fields</p>
+              <ul className="tx-import-list">
+                <li><code>accountId</code> or <code>accountName</code>, plus <code>type</code>, <code>amount</code>, <code>date</code></li>
+                <li>Use <code>categoryId</code> or <code>categoryName</code> for income/expense</li>
+                <li><code>type</code> must be <code>income</code>, <code>expense</code>, or <code>transfer</code></li>
+                <li>Use <code>destinationAccountId</code> or <code>destinationAccountName</code> for transfer transactions</li>
+              </ul>
+            </div>
+
+            <div className="tx-import-side-card">
+              <p className="tx-import-side-title">Active Rules ({activeRules.length})</p>
+              <div className="tx-rule-chip-wrap">
+                {activeRules.length === 0 ? (
+                  <p className="hint-text">No active rules.</p>
+                ) : (
+                  activeRules.map((rule) => (
+                    <span key={rule.id} className="tx-rule-chip">{rule.name} (P{rule.priority})</span>
+                  ))
+                )}
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {importError ? <p className="error-text">{importError}</p> : null}
+
+        {importResult ? (
+          <div className="tx-import-result">
+            <p className="hint-text">Imported: <strong>{importResult.importedCount}</strong> | Failed: <strong>{importResult.failedCount}</strong></p>
+            {importResult.imported.some((row) => (row.alerts?.length ?? 0) > 0) ? (
+              <div>
+                <p className="hint-text">Rule Alerts</p>
+                <ul>
+                  {importResult.imported.flatMap((row) => (row.alerts ?? []).map((alert, idx) => (
+                    <li key={`${row.transactionId}-${idx}`} className="hint-text">Row {row.index + 1}: {alert}</li>
+                  )))}
+                </ul>
+              </div>
+            ) : null}
+            {importResult.failures.length > 0 ? (
+              <div>
+                <p className="error-text">Import Errors</p>
+                <ul>
+                  {importResult.failures.map((failure, idx) => (
+                    <li key={`${failure.index}-${idx}`} className="error-text">Row {failure.index + 1}: {failure.error}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </article>
 
       <article className="card">
@@ -457,6 +710,8 @@ export function TransactionsPage() {
         </div>
       </article>
 
+      <AddTransactionModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onToast={showToast} />
+
       <EditTransactionModal
         transaction={editingTx}
         isOpen={Boolean(editingTx)}
@@ -484,6 +739,20 @@ export function TransactionsPage() {
     </section>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

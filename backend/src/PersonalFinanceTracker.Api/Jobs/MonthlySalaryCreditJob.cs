@@ -49,6 +49,7 @@ public sealed class MonthlySalaryCreditJob(IServiceScopeFactory scopeFactory, IL
             db.Transactions.Add(new Transaction
             {
                 UserId = account.UserId,
+                CreatedByUserId = account.UserId,
                 AccountId = account.Id,
                 CategoryId = salaryCategory?.Id,
                 Type = "income",

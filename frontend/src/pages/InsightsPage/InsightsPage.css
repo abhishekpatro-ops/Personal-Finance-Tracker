@@ -1,0 +1,151 @@
+.insights-page {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.insights-kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.insights-score-value {
+  margin: 0.2rem 0 0.1rem;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+
+.insights-score-value span {
+  font-size: 1.05rem;
+  color: #475569;
+  margin-left: 0.2rem;
+}
+
+.insights-networth-value {
+  margin: 0.25rem 0 0.1rem;
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+
+.insights-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+.insights-breakdown-grid div {
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  border-radius: 10px;
+  padding: 0.65rem;
+}
+
+.insights-breakdown-grid p {
+  margin: 0;
+  color: #475569;
+}
+
+.insights-breakdown-grid strong {
+  font-size: 1.2rem;
+}
+
+.insights-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.insights-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.9rem;
+}
+
+.insights-chart-wrap {
+  margin-top: 0.4rem;
+  width: 100%;
+  min-height: 250px;
+}
+.insights-findings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.7rem;
+}
+
+.insights-finding-card {
+  border: 1px solid #dbeafe;
+  background: #f8fbff;
+  border-radius: 12px;
+  padding: 0.7rem;
+}
+
+.insights-finding-title {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #475569;
+}
+
+.insights-finding-value {
+  margin: 0.25rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.insights-finding-change {
+  margin: 0.2rem 0 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.insights-finding-desc {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.insights-tone-positive { color: #15803d; }
+.insights-tone-negative { color: #b91c1c; }
+.insights-tone-neutral { color: #0f172a; }
+
+.theme-dark .insights-finding-card {
+  background: #0f1b2d;
+  border-color: #334155;
+}
+
+.theme-dark .insights-finding-title,
+.theme-dark .insights-score-value span,
+.theme-dark .insights-finding-desc {
+  color: #94a3b8;
+}
+
+.theme-dark .insights-finding-value {
+  color: #e2e8f0;
+}
+
+.theme-dark .insights-tone-positive { color: #86efac; }
+.theme-dark .insights-tone-negative { color: #fecaca; }
+.theme-dark .insights-tone-neutral { color: #e2e8f0; }
+
+.insights-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.insights-hide-toggle {
+  min-width: 96px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+@media (max-width: 700px) {
+  .insights-balance-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+

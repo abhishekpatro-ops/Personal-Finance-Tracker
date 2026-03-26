@@ -6,10 +6,13 @@ import { BudgetsPage } from "./pages/BudgetsPage/BudgetsPage";
 import { CategoriesPage } from "./pages/CategoriesPage/CategoriesPage";
 import { DashboardPage } from "./pages/DashboardPage/DashboardPage";
 import { GoalsPage } from "./pages/GoalsPage/GoalsPage";
+import { InsightsPage } from "./pages/InsightsPage/InsightsPage";
 import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { RecurringPage } from "./pages/RecurringPage/RecurringPage";
 import { ReportsPage } from "./pages/ReportsPage/ReportsPage";
+import { RulesPage } from "./pages/RulesPage/RulesPage";
 import { SettingsPage } from "./pages/SettingsPage/SettingsPage";
+import { SharedAccountsPage } from "./pages/SharedAccountsPage/SharedAccountsPage";
 import { SignUpPage } from "./pages/SignUpPage/SignUpPage";
 import { TransactionsPage } from "./pages/TransactionsPage/TransactionsPage";
 
@@ -39,8 +42,11 @@ export function App() {
           <Route path="/budgets" element={<BudgetsPage />} />
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/insights" element={<InsightsPage />} />
+          <Route path="/rules" element={<RulesPage />} />
           <Route path="/recurring" element={<RecurringPage />} />
           <Route path="/accounts" element={<AccountsPage />} />
+          <Route path="/shared-accounts" element={<SharedAccountsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Route>

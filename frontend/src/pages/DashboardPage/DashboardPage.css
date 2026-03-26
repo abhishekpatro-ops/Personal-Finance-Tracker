@@ -294,3 +294,25 @@
 .theme-dark .dashboard-goal-status {
   color: #93c5fd;
 }
+
+.dashboard-kpi-value {
+  margin: 0.2rem 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.dashboard-kpi-income {
+  color: #16a34a;
+}
+
+.dashboard-kpi-expense {
+  color: #dc2626;
+}
+
+.theme-dark .dashboard-kpi-income {
+  color: #86efac;
+}
+
+.theme-dark .dashboard-kpi-expense {
+  color: #fca5a5;
+}

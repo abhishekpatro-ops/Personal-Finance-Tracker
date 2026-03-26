@@ -42,6 +42,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .UseSnakeCaseNamingConvention());
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAccessControlService, AccessControlService>();
+builder.Services.AddScoped<IRulesEngineService, RulesEngineService>();
+builder.Services.AddScoped<IForecastService, ForecastService>();
+builder.Services.AddScoped<IInsightsService, InsightsService>();
 builder.Services.AddHostedService<MonthlySalaryCreditJob>();
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "super-long-development-jwt-key-change-me";
@@ -73,6 +77,10 @@ using (var scope = app.Services.CreateScope())
 
     db.Database.ExecuteSqlRaw("ALTER TABLE accounts ADD COLUMN IF NOT EXISTS is_primary boolean NOT NULL DEFAULT false;");
     db.Database.ExecuteSqlRaw("ALTER TABLE transactions ADD COLUMN IF NOT EXISTS destination_account_id uuid NULL;");
+    db.Database.ExecuteSqlRaw("ALTER TABLE transactions ADD COLUMN IF NOT EXISTS created_by_user_id uuid NULL;");
+    db.Database.ExecuteSqlRaw("UPDATE transactions SET created_by_user_id = user_id WHERE created_by_user_id IS NULL;");
+    db.Database.ExecuteSqlRaw("ALTER TABLE transactions ALTER COLUMN created_by_user_id SET NOT NULL;");
+
     db.Database.ExecuteSqlRaw(@"
         CREATE TABLE IF NOT EXISTS salary_credits (
             id uuid PRIMARY KEY,
@@ -82,7 +90,33 @@ using (var scope = app.Services.CreateScope())
             amount numeric(12,2) NOT NULL,
             credited_at timestamp NOT NULL DEFAULT now()
         );");
+
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS rules (
+            id uuid PRIMARY KEY,
+            user_id uuid NOT NULL,
+            priority int NOT NULL DEFAULT 100,
+            name varchar(140) NOT NULL,
+            condition_json jsonb NOT NULL,
+            action_json jsonb NOT NULL,
+            is_active boolean NOT NULL DEFAULT true,
+            created_at timestamp NOT NULL DEFAULT now(),
+            updated_at timestamp NOT NULL DEFAULT now()
+        );");
+
+    db.Database.ExecuteSqlRaw(@"
+        CREATE TABLE IF NOT EXISTS account_members (
+            id uuid PRIMARY KEY,
+            account_id uuid NOT NULL references accounts(id) ON DELETE CASCADE,
+            user_id uuid NOT NULL references users(id) ON DELETE CASCADE,
+            role varchar(20) NOT NULL,
+            invited_by_user_id uuid NOT NULL references users(id),
+            created_at timestamp NOT NULL DEFAULT now()
+        );");
+
     db.Database.ExecuteSqlRaw("CREATE UNIQUE INDEX IF NOT EXISTS ix_salary_credits_user_year_month ON salary_credits(user_id, year, month);");
+    db.Database.ExecuteSqlRaw("CREATE UNIQUE INDEX IF NOT EXISTS ix_account_members_account_user ON account_members(account_id, user_id);");
+    db.Database.ExecuteSqlRaw("CREATE INDEX IF NOT EXISTS ix_account_members_user_id ON account_members(user_id);");
 
     var usersWithoutPrimary = db.Accounts
         .GroupBy(a => a.UserId)
@@ -115,8 +149,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
-
-
-

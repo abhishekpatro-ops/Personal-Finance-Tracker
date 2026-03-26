@@ -249,3 +249,136 @@
 .theme-dark .tx-value-transfer {
   color: #7dd3fc;
 }
+.tx-import-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tx-import-head h3 {
+  margin: 0;
+}
+
+.tx-import-head .hint-text {
+  margin-top: 0.25rem;
+}
+
+.tx-import-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.tx-import-main,
+.tx-import-side {
+  min-width: 0;
+}
+
+.tx-import-side {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tx-import-side-card {
+  border: 1px solid #dbeafe;
+  background: #f8fbff;
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+
+.tx-import-side-title {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tx-import-list {
+  margin: 0;
+  padding-left: 1rem;
+  color: #334155;
+  font-size: 0.86rem;
+}
+
+.tx-import-list li + li {
+  margin-top: 0.25rem;
+}
+
+.tx-rule-chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tx-rule-chip {
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.tx-import-label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.tx-import-textarea {
+  width: 100%;
+  min-height: 154px;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  padding: 0.6rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+}
+
+.tx-import-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.tx-import-result {
+  border: 1px solid #dbeafe;
+  background: #f8fbff;
+  border-radius: 8px;
+  padding: 0.55rem;
+}
+
+.tx-import-result ul {
+  margin: 0.25rem 0 0;
+}
+
+.theme-dark .tx-import-side-card,
+.theme-dark .tx-import-result {
+  background: #0f1b2d;
+  border-color: #334155;
+}
+
+.theme-dark .tx-import-side-title,
+.theme-dark .tx-import-list {
+  color: #e2e8f0;
+}
+
+.theme-dark .tx-rule-chip {
+  background: #0f1b2d;
+  border-color: #475569;
+  color: #bfdbfe;
+}
+
+.theme-dark .tx-import-textarea {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #475569;
+}
+
+@media (max-width: 980px) {
+  .tx-import-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
