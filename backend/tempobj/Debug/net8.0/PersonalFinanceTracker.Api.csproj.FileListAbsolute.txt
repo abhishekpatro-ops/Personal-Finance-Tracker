@@ -1,0 +1,9 @@
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.csproj.AssemblyReference.cache
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\rpswa.dswa.cache.json
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.AssemblyInfoInputs.cache
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.AssemblyInfo.cs
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.csproj.CoreCompileInputs.cache
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.MvcApplicationPartsAssemblyInfo.cache
+D:\Personal\Personal Finance Tracker\backend\tempobj\Debug\net8.0\PersonalFinanceTracker.Api.sourcelink.json
